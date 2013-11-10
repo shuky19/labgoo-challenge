@@ -12,12 +12,12 @@ var COLOR_MYSELF_ON_BLOCK = "#800000"
 var COLOR_OTHER_ON_BLOCK = "#3399FF"
 
 // Block types
-var BLOCK_MYSELF = 0 
+var BLOCK_MYSELF = 0
 var BLOCK_OTHER = 1
 var BLOCK_HOLLOW = 2
 var BLOCK_FREE = 3
 var BLOCK_FULL = 4
-var BLOCK_MYSELF_ON_BLOCK = 5 
+var BLOCK_MYSELF_ON_BLOCK = 5
 var BLOCK_OTHER_ON_BLOCK = 6
 
 var COLORS = []
@@ -28,10 +28,9 @@ COLORS[BLOCK_FREE] = COLOR_FREE_BLOCK;
 COLORS[BLOCK_FULL] = COLOR_FULL_BLOCK;
 COLORS[BLOCK_MYSELF_ON_BLOCK] = COLOR_MYSELF_ON_BLOCK;
 COLORS[BLOCK_OTHER_ON_BLOCK] = COLOR_OTHER_ON_BLOCK;
-// var IMAGES = [[BLOCK_MYSELF, "FF0000"], [BLOCK_FULL, "192823"], [BLOCK_FREE, "FFFFFF"], [BLOCK_HOLLOW, "F2F2E6"], [BLOCK_OTHER, "216475"]]
-// ctx.drawImage(img,10,10,10,10);
+
 game = {
-  
+
   grid: [],
   score: 0,
   fps: 8,
@@ -40,7 +39,7 @@ game = {
   block_width: null,
   time: null,
   interval: null,
-  
+
   setGrid: function (grid) {
     game.grid = grid;
     game.block_height =canvas.height / grid[0].length;
@@ -77,18 +76,18 @@ game = {
       };
     }
   },
-  
+
   stop: function() {
     game.over = true;
     game.drawMessage("Game over! Score: " + game.score + ", Press space to start new game");
     game.resetCanvas();
   },
-  
+
   drawMessage: function(message) {
       var timeP = document.getElementById('time');
       timeP.innerText = message;
   },
-  
+
   drawBox: function(x, y, color) {
     context.fillStyle = color;
     context.strokeStyle = color;
@@ -100,14 +99,14 @@ game = {
     context.closePath();
     context.fill();
   },
-  
+
   drawScore: function() {
     context.fillStyle = '#999';
     context.font = (canvas.height) + 'px Impact, sans-serif';
     context.textAlign = 'center';
     context.fillText(game.score, canvas.width / 2, canvas.height * 0.9);
   },
-  
+
   drawTime: function() {
     if (game.time !== null) {
       game.drawMessage("Time left: " + game.time);
@@ -127,22 +126,22 @@ game = {
       };
     }
   },
-  
+
   resetCanvas: function() {
     context.clearRect(0, 0, canvas.width, canvas.height);
   }
-  
+
 };
 
 myself = {
   x: null,
   y: null,
   prev_block: null,
-  
+
   setPosition: function(x,y) {
     myself.x = x;
     myself.y = y;
-  },  
+  },
 
   move: function(direction) {
     var prev_x = myself.x;
@@ -167,7 +166,7 @@ myself = {
 
       // Validations
       if (myself.x == -1 || myself.y == -1 ||
-        myself.y == game.grid.length || myself.x == game.grid[0].length || 
+        myself.y == game.grid.length || myself.x == game.grid[0].length ||
         grid[myself.y][myself.x] == BLOCK_OTHER || grid[myself.y][myself.x] == BLOCK_OTHER_ON_BLOCK ||
          grid[myself.y][myself.x] == BLOCK_FULL) {
         myself.x = prev_x;
