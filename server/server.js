@@ -10,20 +10,16 @@ var server = new Firebase('https://labgoochallenge.firebaseio.com');
 var games = server.child('games');
 var currentGameRef;
 
-// Block types
-// var BLOCK_MYSELF = 0;
-// var BLOCK_OTHER = 1;
-// var BLOCK_HOLLOW = 2;
-// var BLOCK_FREE = 3;
-// var BLOCK_FULL = 4;
-// var BLOCK_MYSELF_ON_BLOCK = 5;
-// var BLOCK_OTHER_ON_BLOCK = 6;
-
 var generatedMap = [
-[constants.BLOCK_HOLLOW,-1,-1,-1],
-[-1,-2,-1,-1],
-[-1,-1,-1,-1],
-[-1,-1,-1,-1]];
+[constants.BLOCK_MYSELF,constants.BLOCK_FREE,constants.BLOCK_FREE,constants.BLOCK_FREE,constants.BLOCK_FREE,constants.BLOCK_FREE,constants.BLOCK_OTHER, constants.BLOCK_FREE,constants.BLOCK_FREE,constants.BLOCK_FREE],
+[constants.BLOCK_FREE,constants.BLOCK_OTHER,constants.BLOCK_FREE,constants.BLOCK_FREE,constants.BLOCK_FREE, constants.BLOCK_FREE,constants.BLOCK_OTHER,constants.BLOCK_FREE,constants.BLOCK_FREE,constants.BLOCK_FREE],
+[constants.BLOCK_FREE,constants.BLOCK_FREE,constants.BLOCK_OTHER,constants.BLOCK_FREE,constants.BLOCK_FREE, constants.BLOCK_FREE,constants.BLOCK_OTHER,constants.BLOCK_FREE,constants.BLOCK_FREE,constants.BLOCK_FREE],
+[constants.BLOCK_FREE,constants.BLOCK_FREE,constants.BLOCK_FULL,constants.BLOCK_FULL,constants.BLOCK_FULL, constants.BLOCK_FREE,constants.BLOCK_OTHER,constants.BLOCK_FREE,constants.BLOCK_FREE,constants.BLOCK_OTHER_ON_BLOCK],
+[constants.BLOCK_FREE,constants.BLOCK_FREE,constants.BLOCK_FULL,constants.BLOCK_FULL,constants.BLOCK_FULL, constants.BLOCK_FREE,constants.BLOCK_OTHER,constants.BLOCK_FREE,constants.BLOCK_FREE,constants.BLOCK_FREE],
+[constants.BLOCK_OTHER_ON_BLOCK,constants.BLOCK_FREE,constants.BLOCK_FULL,constants.BLOCK_FULL,constants.BLOCK_FULL, constants.BLOCK_FREE,constants.BLOCK_OTHER,constants.BLOCK_FREE,constants.BLOCK_FREE,constants.BLOCK_FREE],
+[constants.BLOCK_FREE,constants.BLOCK_FREE,constants.BLOCK_FULL,constants.BLOCK_FULL,constants.BLOCK_FULL, constants.BLOCK_FREE,constants.BLOCK_FREE,constants.BLOCK_FREE,constants.BLOCK_FREE,constants.BLOCK_FREE],
+[constants.BLOCK_FREE,constants.BLOCK_FREE,constants.BLOCK_FULL,constants.BLOCK_FULL,constants.BLOCK_FULL, constants.BLOCK_FREE,constants.BLOCK_OTHER,constants.BLOCK_FREE,constants.BLOCK_FREE,constants.BLOCK_FREE],
+[constants.BLOCK_FREE,constants.BLOCK_FREE,constants.BLOCK_HOLLOW,constants.BLOCK_HOLLOW,constants.BLOCK_FREE, constants.BLOCK_FREE,constants.BLOCK_OTHER,constants.BLOCK_FREE,constants.BLOCK_FREE,constants.BLOCK_FREE]];
 
 
 app.get('/register', function(req, res) {
@@ -73,6 +69,7 @@ app.get('/games/:game_id/:user_id/move', function(req, res) {
   if (block_type == 0) {
     // update firebase with user position
   };
+    res.setHeader("Access-Control-Allow-Origin", "*")
     res.send([]);
     // Add user to firebase
 });
@@ -91,8 +88,8 @@ function findOldPlace(map, player_id) {
 }
 
 function isValidLocation(map,x,y){
-  var result =  map[y.toString()][x.toString()] == BLOCK_HOLLOW ||
-            map[y.toString()][x.toString()] == BLOCK_FREE;
+  var result =  map[y.toString()][x.toString()] == constants.BLOCK_HOLLOW ||
+            map[y.toString()][x.toString()] == constants.BLOCK_FREE;
    console.log("isvalid : " + result);
    return result;
 }
