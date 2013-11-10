@@ -1,0 +1,8 @@
+// Block types
+var BLOCK_MYSELF = 0
+var BLOCK_OTHER = 1
+var BLOCK_HOLLOW = 2
+var BLOCK_FREE = 3
+var BLOCK_FULL = 4
+var BLOCK_MYSELF_ON_BLOCK = 5
+var BLOCK_OTHER_ON_BLOCK = 6
