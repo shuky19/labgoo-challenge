@@ -1,26 +1,53 @@
+var dataBase = new Firebase('https://labgoochallenge.firebaseio.com');
+var serverAddress = "http://localhost:3000"
+
+// $().ready(function () {
+//   $.get({
+//     url: serverAddress+'/register',
+//     data: {},
+//     success: function (data) {
+//       console.log("Success");
+//     },
+//     error:  function (request,error) {
+//       console.log("Success");
+//     },
+//     dataType: "json"
+//   });
+// });
+
+$.get( "http://localhost:3000/register?name=asd", function( data ) {
+  alert( "Load was performed." );
+});
+
+
+
+// server.child("players").child("Shuky").on("game", function(game_id) {
+//   game.setGrid(server.child("games").child(game_id).grid);
+
+//   server.child("games").child(game_id).on("change", function(grid) {
+//     game.setGrid(server.child("games").child(game_id).grid);
+//   })
+// })
+
+// server.child("players").child("Shuky").on("game", function(game_id) {
+
+// server.child("players").push("Shuky");
+
+
 var canvas = document.getElementById("the-game");
 var context = canvas.getContext("2d");
 var game;
 
 // Colors
-var COLOR_MYSELF_BLOCK = "#FF0000"
-var COLOR_OTHER_BLOCK = "#216475"
-var COLOR_HOLLOW_BLOCK = "#C0C0C0"
-var COLOR_FREE_BLOCK = "#FFFFFF"
-var COLOR_FULL_BLOCK = "#192823"
-var COLOR_MYSELF_ON_BLOCK = "#800000"
-var COLOR_OTHER_ON_BLOCK = "#3399FF"
+var COLOR_MYSELF_BLOCK = "#FF0000";
+var COLOR_OTHER_BLOCK = "#216475";
+var COLOR_HOLLOW_BLOCK = "#C0C0C0";
+var COLOR_FREE_BLOCK = "#FFFFFF";
+var COLOR_FULL_BLOCK = "#192823";
+var COLOR_MYSELF_ON_BLOCK = "#800000";
+var COLOR_OTHER_ON_BLOCK = "#3399FF";
 
-// Block types
-var BLOCK_MYSELF = 0 
-var BLOCK_OTHER = 1
-var BLOCK_HOLLOW = 2
-var BLOCK_FREE = 3
-var BLOCK_FULL = 4
-var BLOCK_MYSELF_ON_BLOCK = 5 
-var BLOCK_OTHER_ON_BLOCK = 6
-
-var COLORS = []
+var COLORS = [];
 COLORS[BLOCK_MYSELF] = COLOR_MYSELF_BLOCK;
 COLORS[BLOCK_OTHER] = COLOR_OTHER_BLOCK;
 COLORS[BLOCK_HOLLOW] = COLOR_HOLLOW_BLOCK;
@@ -28,8 +55,7 @@ COLORS[BLOCK_FREE] = COLOR_FREE_BLOCK;
 COLORS[BLOCK_FULL] = COLOR_FULL_BLOCK;
 COLORS[BLOCK_MYSELF_ON_BLOCK] = COLOR_MYSELF_ON_BLOCK;
 COLORS[BLOCK_OTHER_ON_BLOCK] = COLOR_OTHER_ON_BLOCK;
-// var IMAGES = [[BLOCK_MYSELF, "FF0000"], [BLOCK_FULL, "192823"], [BLOCK_FREE, "FFFFFF"], [BLOCK_HOLLOW, "F2F2E6"], [BLOCK_OTHER, "216475"]]
-// ctx.drawImage(img,10,10,10,10);
+
 game = {
   
   grid: [],
@@ -138,6 +164,7 @@ myself = {
   x: null,
   y: null,
   prev_block: null,
+  users_id: null,
   
   setPosition: function(x,y) {
     myself.x = x;
@@ -225,20 +252,5 @@ function loop() {
     requestAnimationFrame(loop);
   }, 1000 / game.fps);
 }
-
-
-var server = new Firebase("https://labgoochanllenge.firebaseio.com");
-
-server.child("players").child("Shuky").on("game", function(game_id) {
-  game.setGrid(server.child("games").child(game_id).grid);
-
-  server.child("games").child(game_id).on("change", function(grid) {
-    game.setGrid(server.child("games").child(game_id).grid);
-  })
-})
-
-server.child("players").child("Shuky").on("game", function(game_id) {
-
-server.child("players").push("Shuky");
 
 requestAnimationFrame(loop);

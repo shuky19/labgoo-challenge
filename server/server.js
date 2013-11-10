@@ -9,6 +9,13 @@ var server = new Firebase('https://labgoochallenge.firebaseio.com');
 var games = server.child('games');
 var currentGameRef;
 
+// app.set('views', __dirname + '/../');
+// app.engine('html', require('ejs').renderFile);
+
+// app.get('/'), function (req, res) {
+//   res.render("index.html");
+// }
+
 app.get('/register', function(req, res) {
   ++users_count;
 
@@ -17,7 +24,7 @@ app.get('/register', function(req, res) {
     createGame();
   };
 
-  var new_player_ref = addPlayer(req.params.name);
+  var new_player_ref = addPlayer(req.query.name);
 
   // Case of full game
   if (users_count % MAX_USERS_PER_GAME == MAX_USERS_PER_GAME-1) {
@@ -65,5 +72,6 @@ function setGameInterval(){
         clearInterval(interval);
       }, 5000 );
 }
+
 app.listen(3000);
 console.log('Listening on port 3000...');
