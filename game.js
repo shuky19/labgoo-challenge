@@ -1,19 +1,5 @@
 var dataBase = new Firebase('https://labgoochallenge.firebaseio.com');
-var serverAddress = "http://10.0.0.14:3000"
-
-
-// server.child("players").child("Shuky").on("game", function(game.game_id) {
-//   game.setGrid(server.child("games").child(game_id).grid);
-
-//   server.child("games").child(game_id).on("change", function(grid) {
-//     game.setGrid(server.child("games").child(game_id).grid);
-//   })
-// })
-
-// server.child("players").child("Shuky").on("game", function(game_id) {
-
-// server.child("players").push("Shuky");
-
+var serverAddress = "http://10.0.0.14:3000";
 
 var canvas = document.getElementById("the-game");
 var context = canvas.getContext("2d");
@@ -42,7 +28,7 @@ game = {
 
   grid: [],
   score: 0,
-  fps: 8,
+  fps: 30,
   over: true,
   block_height: null,
   block_width: null,
@@ -63,8 +49,8 @@ game = {
     game.score = 0;
     game.fps = 8;
     myself.prev_block = BLOCK_FREE;
-    game.time = 5;
-    // game.interval = setInterval(function(){game.decreaseTime()},1000);
+    game.time = 15;
+    game.interval = setInterval(function(){game.decreaseTime()},1000);
   },
 
   decreaseTime: function() {
@@ -72,15 +58,15 @@ game = {
       --game.time;
 
       if (game.time == 0) {
-        game.stop();
-        // clearInterval(game.interval);
+        // game.stop();
+        clearInterval(game.interval);
       };
     }
   },
 
   stop: function() {
     game.over = true;
-    game.drawMessage("Game over! Score: " + game.score + ", Press space to start new game");
+    game.drawMessage("Game over!, Refresh to start new game");
     game.resetCanvas();
   },
 
@@ -181,15 +167,17 @@ myself = {
         return;
       }
 
-      // // Saveing prev block
-      // grid[prev_y][prev_x] = myself.prev_block;
-      // myself.prev_block = grid[myself.y][myself.x];
-
-      // // Setting new position
-      // grid[myself.y][myself.x] = BLOCK_MYSELF;
+      
       var add = serverAddress+"/games/"+game.game_id+"/"+game.player_id+"/move?x="+myself.x+"&y="+myself.y;
       $.getJSON(add, function( data ) {
+        if (data[0] == true) {
+          // // Saveing prev block
+          // grid[prev_y][prev_x] = myself.prev_block;
+          // myself.prev_block = grid[myself.y][myself.x];
 
+          // // Setting new position
+          // grid[myself.y][myself.x] = BLOCK_MYSELF;
+        }
       });
   },
 };
@@ -243,17 +231,17 @@ $.getJSON(serverAddress+"/register?name=asdasd", function( data ) {
   game.player_id = data[0].user_id;
 
 
-  dataBase.child("games").on("child_changed", function(data) {
-    if (data.name() == game.game_id) {
-      server_game = data.val();
-      game.setGrid(server_game.map);
 
-      if (server_game.state == "started" && game.over == true) {
+  dataBase.child("games/"+game.game_id).on("child_changed", function(data) {
+    if (data.name() == "map") {
+      game.setGrid(data.val());
+    } else if (data.name() == "state") {
+      if (data.val() == "started" && game.over == true) {
         console.log("Starting game");
         game.start();
       }
 
-      if (server_game.state == "finito" && game.over == false) {
+      if (data.val() == "finito" && game.over == false) {
         console.log("Stopping game");
         game.stop();
       }
