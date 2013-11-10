@@ -25,6 +25,7 @@ var generatedMap = [
 [-1,-1,-1,-1],
 [-1,-1,-1,-1]];
 
+
 app.get('/register', function(req, res) {
   ++users_count;
 
@@ -48,11 +49,24 @@ app.get('/register', function(req, res) {
 
 app.get('/games/:game_id/:user_id/move', function(req, res) {
   var player = req.params.user_id;
-  var game = req.params.game_id;
+  var game_id = req.params.game_id;
   var x = req.query.x;
   var y = req.query.y;
 
-  console.log(player + " " + game + " " + x);
+  console.log(player + " " + game_id + " " + x);
+  games.child(game_id).once('value', function(game) {
+    var map = game.val().map;
+    console.log("validating location");
+    if(isValidLocation(map,x,y)){
+      console.log("location is valid");
+      var old_place = findOldPlace(map, player);
+      console.log('old place: ' + old_place.x);
+      map[old_place.y][old_place.x] = 3;
+      map[y][x] = player;
+      games.child(game_id + "/map").set(map);
+    }
+  });
+
   // get block type in pos(x,y)
   var block_type = 0
 
@@ -63,6 +77,25 @@ app.get('/games/:game_id/:user_id/move', function(req, res) {
     // Add user to firebase
 });
 
+
+function findOldPlace(map, player_id) {
+  var i, j = 0;
+  for (i = 0; i < map.length; i++) {
+    for (j = 0; j < map[i.toString()].length; j++) {
+      var val = map[i.toString()][j.toString()];
+      if (val == player_id) {
+        return {x:j, y:i};
+      }
+    }
+  }
+}
+
+function isValidLocation(map,x,y){
+  var result =  map[y.toString()][x.toString()] == BLOCK_HOLLOW ||
+            map[y.toString()][x.toString()] == BLOCK_FREE;
+   console.log("isvalid : " + result);
+   return result;
+}
 
 function startGame(){
   console.log("Startig game: " + currentGameRef.name());
@@ -79,7 +112,14 @@ function startGame(){
     console.log(map);
   });
 
-  currentGameRef.child('state').set('started');
+  var stateRef = currentGameRef.child('state')
+  stateRef.set('started');
+  console.log("game started will call finish in 5 sec");
+  var interval = setInterval(function(){
+        console.log("finish game");
+        stateRef.set('finito');
+        clearInterval(interval);
+      }, 5000 );
 }
 function addPlayer(name){
   var players = currentGameRef.child("players");
